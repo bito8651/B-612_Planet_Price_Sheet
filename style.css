@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: url('background-desktop.PNG') no-repeat center center fixed;
+    background-size: cover;
+}
+
+header {
+    padding: 20px;
+}
+
+.logo {
+    width: 150px;
+}
+
+.exchange-rate, .calculator, .fees {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.rate-img {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
+}
+
+/* 手機版背景 */
+@media (max-width: 768px) {
+    body {
+        background: url('background-mobile.PNG') no-repeat center center fixed;
+        background-size: cover;
+    }
+}

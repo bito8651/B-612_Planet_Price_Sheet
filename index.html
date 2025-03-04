@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-612 Planet中站代切代購 費用換算</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- Logo -->
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+    </header>
+
+    <!-- 本週匯率顯示 -->
+    <section class="exchange-rate">
+        <h2>本週匯率</h2>
+        <p id="rate">載入中...</p>
+        <p id="rate-period">適用期間: 載入中...</p>
+    </section>
+
+    <!-- 費用換算區 -->
+    <section class="calculator">
+        <h2>費用換算</h2>
+        <label for="serviceType">選擇服務：</label>
+        <select id="serviceType">
+            <option value="purchase">代購</option>
+            <option value="payment">代付</option>
+        </select>
+
+        <label for="amount">輸入人民幣金額：</label>
+        <input type="number" id="amount" placeholder="請輸入金額" min="1">
+
+        <button onclick="calculate()">開始換算</button>
+
+        <div id="result"></div>
+    </section>
+
+    <!-- 費率說明 -->
+    <section class="fees">
+        <h2>費率說明</h2>
+        <img src="purchase_rates.png" alt="代購費率" class="rate-img">
+        <img src="payment_rates.png" alt="代付費率" class="rate-img">
+    </section>
+</body>
+</html>
