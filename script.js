@@ -1,6 +1,6 @@
 // ✅ API 取得當週匯率
 async function fetchExchangeRate() {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbwnYltTdnhaKGv4t9gQGGThd6KAhbyL9utX6Mg_6X6L2wPRKAJhwXj5lqVH5WZCWv4z/exec");
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxXWeLsHdPc-FJw5rvbyODCnR-A62G52MPLSygSAxQp6wOR96Bfnxy2gaNGNejHrkjD/exec");
     const data = await response.json();
     document.getElementById("rate").textContent = `1 RMB = ${data.rate} TWD`;
     document.getElementById("rate-period").textContent = `適用期間: ${data.startDate} 至 ${data.endDate}`;
