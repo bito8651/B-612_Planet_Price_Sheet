@@ -11,8 +11,28 @@ header {
     padding: 20px;
 }
 
+/* 🔹 防止 Logo 被下載 */
+.logo-container {
+    position: relative;
+    display: inline-block;
+}
+
 .logo {
     width: 150px;
+    pointer-events: none; /* 禁止滑鼠事件（無法右鍵另存） */
+    user-drag: none; /* 禁止拖曳 */
+    -webkit-user-drag: none;
+}
+
+/* 🔹 添加透明遮罩，防止圖片被右鍵另存 */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 1;
 }
 
 .exchange-rate, .calculator, .fees {
