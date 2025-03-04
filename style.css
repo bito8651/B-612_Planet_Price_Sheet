@@ -3,7 +3,7 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
-    background: url('background-desktop.PNG') no-repeat center center fixed;
+    background: url('desktop-background.PNG') no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -33,7 +33,7 @@ header {
 /* 手機版背景 */
 @media (max-width: 768px) {
     body {
-        background: url('background-mobile.PNG') no-repeat center center fixed;
+        background: url('mobile-background.PNG') no-repeat center center fixed;
         background-size: cover;
     }
 }
