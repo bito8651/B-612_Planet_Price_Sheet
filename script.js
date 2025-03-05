@@ -30,49 +30,62 @@ fetchExchangeRate();
 
 // ✅ 費率設定（內建，無需 API）
 const purchaseRates = [
-    { min: 1, max: 100, rate: 0.10, minFee: 30 },
-    { min: 101, max: 200, rate: 0.09, minFee: 0 },
-    { min: 201, max: 300, rate: 0.08, minFee: 0 },
-    { min: 301, max: 999, rate: 0.06, minFee: 0 },
-    { min: 1000, max: Infinity, rate: 0.05, minFee: 0 }
+    { min: 1, max: 100, rate: 0.10, minFeeTWD: 30 },
+    { min: 101, max: 200, rate: 0.09, minFeeTWD: 0 },
+    { min: 201, max: 300, rate: 0.08, minFeeTWD: 0 },
+    { min: 301, max: 999, rate: 0.06, minFeeTWD: 0 },
+    { min: 1000, max: Infinity, rate: 0.05, minFeeTWD: 0 }
 ];
 
 const paymentRates = [
-    { min: 1, max: 100, rate: 0.08, minFee: 25 },
-    { min: 101, max: 200, rate: 0.07, minFee: 0 },
-    { min: 201, max: 500, rate: 0.06, minFee: 0 },
-    { min: 501, max: 1000, rate: 0.05, minFee: 0 },
-    { min: 1000, max: Infinity, rate: 0.03, minFee: 0 }
+    { min: 1, max: 100, rate: 0.08, minFeeTWD: 25 },
+    { min: 101, max: 200, rate: 0.07, minFeeTWD: 0 },
+    { min: 201, max: 500, rate: 0.06, minFeeTWD: 0 },
+    { min: 501, max: 1000, rate: 0.05, minFeeTWD: 0 },
+    { min: 1000, max: Infinity, rate: 0.03, minFeeTWD: 0 }
 ];
 
 // ✅ 計算費用
 function calculate() {
     const serviceType = document.getElementById("serviceType").value;
-    const amount = parseFloat(document.getElementById("amount").value);
-
-    if (!amount || amount <= 0) {
+    const amountRMB = parseFloat(document.getElementById("amount").value);
+    if (!amountRMB || amountRMB <= 0) {
         alert("請輸入有效的金額！");
         return;
     }
 
-    // 🔹 確保 `exchangeRate` 有值
-    if (typeof window.currentExchangeRate === "undefined") {
-        alert("❌ 匯率未載入，請稍後再試");
-        return;
-    }
-    let exchangeRate = window.currentExchangeRate; // ✅ 使用全域變數
+    // 取得當前匯率
+    const exchangeRate = parseFloat(document.getElementById("rate").textContent.split(" ")[3]);
 
     let rateTable = serviceType === "purchase" ? purchaseRates : paymentRates;
-    let selectedRate = rateTable.find(r => amount >= r.min && amount <= r.max);
+    let selectedRate = rateTable.find(r => amountRMB >= r.min && amountRMB <= r.max);
 
-    let serviceFee = Math.max(amount * selectedRate.rate, selectedRate.minFee);
-    let paymentFee = amount >= 201 ? amount * 0.03 : 0;
-    let totalTWD = Math.ceil((amount + serviceFee + paymentFee) * exchangeRate);
+    // 📌 計算人民幣金額
+    let serviceFeeRMB = amountRMB * selectedRate.rate; // 服務費 (RMB)
+    let paymentFeeRMB = amountRMB >= 201 ? amountRMB * 0.03 : 0; // 支付寶手續費 (RMB)
 
+    // 📌 轉換台幣 & 無條件進位
+    let amountTWD = Math.ceil(amountRMB * exchangeRate); // 商品台幣金額
+    let paymentFeeTWD = Math.ceil(paymentFeeRMB * exchangeRate); // 支付寶手續費台幣
+    let serviceFeeTWD = Math.ceil(serviceFeeRMB * exchangeRate); // 服務費台幣
+
+    // 📌 判斷服務費是否低於最低門檻
+    let finalServiceFeeRMB = serviceFeeRMB;
+    let serviceFeeMessage = `${serviceFeeRMB.toFixed(2)} RMB`; // 預設顯示人民幣
+
+    if (serviceFeeTWD < selectedRate.minFeeTWD && selectedRate.minFeeTWD > 0) {
+        finalServiceFeeRMB = (selectedRate.minFeeTWD / exchangeRate); // 反推 RMB
+        serviceFeeMessage = `收取最低服務費 ${selectedRate.minFeeTWD} TWD`;
+    }
+
+    let finalServiceFeeTWD = Math.ceil(finalServiceFeeRMB * exchangeRate); // 服務費最終台幣
+    let totalTWD = Math.ceil(amountTWD + paymentFeeTWD + finalServiceFeeTWD); // 最終總價
+
+    // 📌 顯示結果
     document.getElementById("result").innerHTML = `
-        <p>人民幣金額: ${amount.toFixed(2)} RMB</p>
-        <p>代購/代付費用: ${serviceFee.toFixed(2)} RMB</p>
-        <p>支付寶手續費: ${paymentFee.toFixed(2)} RMB</p>
+        <p>人民幣金額: ${amountRMB.toFixed(2)} RMB</p>
+        <p>支付寶手續費: ${paymentFeeRMB.toFixed(2)} RMB</p>
+        <p>代購/代付費用: ${serviceFeeMessage}</p>
         <h3>最終報價: ${totalTWD} TWD</h3>
     `;
 }
