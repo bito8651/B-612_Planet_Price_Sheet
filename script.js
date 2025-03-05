@@ -55,10 +55,16 @@ function calculate() {
     }
 
     // 取得當前匯率
-    const exchangeRate = parseFloat(document.getElementById("rate").textContent.split(" ")[3]);
+    const exchangeRate = window.currentExchangeRate;
+    if (!exchangeRate) {
+        alert("匯率尚未載入，請稍候再試！");
+        return;
+    }
 
     let rateTable = serviceType === "purchase" ? purchaseRates : paymentRates;
     let selectedRate = rateTable.find(r => amountRMB >= r.min && amountRMB <= r.max);
+    
+    let minFeeTWD = serviceType === "purchase" ? 30 : 25; // ✅ 代購最低 30 TWD，代付最低 25 TWD
 
     // 📌 計算人民幣金額
     let serviceFeeRMB = amountRMB * selectedRate.rate; // 服務費 (RMB)
@@ -70,16 +76,18 @@ function calculate() {
     let serviceFeeTWD = Math.ceil(serviceFeeRMB * exchangeRate); // 服務費台幣
 
     // 📌 判斷服務費是否低於最低門檻
+    let finalServiceFeeTWD = serviceFeeTWD;
     let finalServiceFeeRMB = serviceFeeRMB;
     let serviceFeeMessage = `${serviceFeeRMB.toFixed(2)} RMB`; // 預設顯示人民幣
 
-    if (serviceFeeTWD < selectedRate.minFeeTWD && selectedRate.minFeeTWD > 0) {
-        finalServiceFeeRMB = (selectedRate.minFeeTWD / exchangeRate); // 反推 RMB
-        serviceFeeMessage = `收取最低服務費 ${selectedRate.minFeeTWD} TWD`;
+    if (serviceFeeTWD < minFeeTWD) {
+        finalServiceFeeTWD = minFeeTWD; // 強制使用最低台幣服務費
+        finalServiceFeeRMB = finalServiceFeeTWD / exchangeRate; // 反推回人民幣
+        serviceFeeMessage = `收取最低服務費 ${minFeeTWD} TWD (${finalServiceFeeRMB.toFixed(2)} RMB)`;
     }
 
-    let finalServiceFeeTWD = Math.ceil(finalServiceFeeRMB * exchangeRate); // 服務費最終台幣
-    let totalTWD = Math.ceil(amountTWD + paymentFeeTWD + finalServiceFeeTWD); // 最終總價
+    // 📌 計算最終金額（台幣）
+    let totalTWD = Math.ceil(amountTWD + paymentFeeTWD + finalServiceFeeTWD);
 
     // 📌 顯示結果
     document.getElementById("result").innerHTML = `
