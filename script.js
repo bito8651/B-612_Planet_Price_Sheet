@@ -87,7 +87,7 @@ function calculate() {
     }
 
     // 📌 計算最終金額（台幣）
-    let totalTWD = Math.ceil(amountTWD + paymentFeeTWD + finalServiceFeeTWD);
+    let totalTWD = Math.ceil(amountTWD + paymentFeeTWD + finalServiceFeeTWD + 15);
 
     // 📌 顯示結果
     document.getElementById("result").innerHTML = `
